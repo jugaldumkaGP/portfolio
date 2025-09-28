@@ -28,13 +28,48 @@ if (themeToggle) {
   });
 }
 
-// Mobile nav toggle
+// Mobile nav toggle with background blur
 const btn = document.querySelector('.nav-toggle');
 const list = document.querySelector('#nav-menu');
+
+// Create and insert mobile menu overlay
+const createMobileOverlay = () => {
+  const overlay = document.createElement('div');
+  overlay.className = 'mobile-menu-overlay';
+  overlay.id = 'mobile-menu-overlay';
+  document.body.appendChild(overlay);
+  return overlay;
+};
+
+// Get or create overlay
+const overlay = document.getElementById('mobile-menu-overlay') || createMobileOverlay();
+
+// Toggle mobile menu function
+const toggleMobileMenu = (isOpen) => {
+  if (isOpen) {
+    list.classList.add('open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+    btn.setAttribute('aria-expanded', 'true');
+  } else {
+    list.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+    btn.setAttribute('aria-expanded', 'false');
+  }
+};
+
 if (btn && list) {
   btn.addEventListener('click', () => {
-    const open = list.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(open));
+    const isOpen = !list.classList.contains('open');
+    toggleMobileMenu(isOpen);
+  });
+}
+
+// Close mobile nav when clicking on overlay
+if (overlay) {
+  overlay.addEventListener('click', () => {
+    toggleMobileMenu(false);
   });
 }
 
@@ -43,10 +78,16 @@ const navLinks = document.querySelectorAll('.nav-list a');
 navLinks.forEach(link => {
   link.addEventListener('click', () => {
     if (list.classList.contains('open')) {
-      list.classList.remove('open');
-      btn.setAttribute('aria-expanded', 'false');
+      toggleMobileMenu(false);
     }
   });
+});
+
+// Close mobile nav on escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && list.classList.contains('open')) {
+    toggleMobileMenu(false);
+  }
 });
 
 // Scroll progress indicator
