@@ -1,3 +1,33 @@
+// Theme toggle functionality
+const themeToggle = document.querySelector('#theme-toggle');
+const themeIcon = themeToggle?.querySelector('.material-symbols-outlined');
+
+// Check for saved theme preference or default to 'dark'
+const currentTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', currentTheme);
+
+// Update icon based on current theme
+const updateThemeIcon = (theme) => {
+  if (themeIcon) {
+    themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+  }
+};
+
+// Initialize icon
+updateThemeIcon(currentTheme);
+
+// Theme toggle event listener
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+  });
+}
+
 // Mobile nav toggle
 const btn = document.querySelector('.nav-toggle');
 const list = document.querySelector('#nav-menu');
